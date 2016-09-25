@@ -103,7 +103,7 @@ int fusion(std::vector<double> list)
     int n = 0;
     std::vector<std::list<double> > list2;
 
-    for (size_t i = 0; i < list.size(); i++)
+    for (size_t i = 0; i < list.size(); ++i)
         if (i % 2 == 0)
         {
             std::list<double> tmp;
@@ -125,7 +125,7 @@ int fusion(std::vector<double> list)
         for (int i = 1; i < list2.size(); ++i)
         {
             std::vector<std::list<double> >::iterator it = list2.begin();
-            for (int j = 0; j < i; j++)
+            for (int j = 0; j < i; ++j)
                 ++it;
             list2.erase(it);
         }
@@ -133,10 +133,35 @@ int fusion(std::vector<double> list)
     return n + 2;
 }
 
-int fast(std::vector<double> list)
+int fast(std::vector<double> list, int start, int end)
 {
-    //TODO
-    return (0);
+    int c = 0;
+    if (start < end)
+    {
+        int n = start;
+        double pivot = list[start];
+        
+        for (int i = start + 1; i <= end; ++i)
+        {
+            ++c;
+            if (list[i] < pivot)
+            {
+                ++n;
+                double tmp = list[i];
+                list[i] = list[n];
+                list[n] = tmp;
+            }
+        }
+
+        double tmp = list[n];
+        list[n] = list[start];
+        list[start] = tmp;
+
+        int p = n;
+        c += fast(list, start, p - 1);
+        c += fast(list, p + 1, end);
+    }
+    return c;
 }
 
 int main(int ac, char **av)
@@ -164,10 +189,10 @@ int main(int ac, char **av)
         list.push_back(std::atof(word.c_str()));
 
     std::cout << list.size() << " éléments" << std::endl;
-    std::cout << "tri par sélection : " << selection(list) << " comparaisons" << std::endl;
-    std::cout << "tri par insertion : " << insertion(list) << " comparaisons" << std::endl;
-    std::cout << "tri à bulles : "      << bubbles(list)   << " comparaisons" << std::endl;
-    std::cout << "tri fusion : "        << fusion(list)    << " comparaisons" << std::endl;
-    std::cout << "tri rapide : "        << fast(list)      << " comparaisons" << std::endl;
+    std::cout << "tri par sélection : " << selection(list)                << " comparaisons" << std::endl;
+    std::cout << "tri par insertion : " << insertion(list)                << " comparaisons" << std::endl;
+    std::cout << "tri à bulles : "      << bubbles(list)                  << " comparaisons" << std::endl;
+    std::cout << "tri fusion : "        << fusion(list)                   << " comparaisons" << std::endl;
+    std::cout << "tri rapide : "        << fast(list, 0, list.size() - 1) << " comparaisons" << std::endl;
     return 0;
 }
