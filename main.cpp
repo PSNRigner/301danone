@@ -133,36 +133,32 @@ int fusion(std::vector<double> list)
     return n + 2;
 }
 
-int fast(std::vector<double> list, int start, int end)
+int fast(std::vector<double> list)
 {
-    int c = 0;
-    if (start < end)
+    if (list.size() < 2)
+        return 0;
+    int n = 0;
+    int pivot = 0;
+    std::vector<double> left;
+    std::vector<double> right;
+
+    for (int i = 0; i < list.size(); ++i)
     {
-        int n = start;
-        double pivot = list[start];
-        
-        for (int i = start + 1; i <= end; ++i)
+        if (i != pivot)
         {
-            ++c;
-            if (list[i] < pivot)
-            {
-                ++n;
-                double tmp = list[i];
-                list[i] = list[n];
-                list[n] = tmp;
-            }
+            ++n;
+            if (list[i] < list[pivot])
+                left.push_back(list[i]);
+            if (list[i] >= list[pivot])
+                right.push_back(list[i]);
         }
-
-        double tmp = list[n];
-        list[n] = list[start];
-        list[start] = tmp;
-
-        int p = n;
-        c += fast(list, start, p - 1);
-        c += fast(list, p + 1, end);
     }
-    return c;
+
+    n += fast(left);
+    n += fast(right);
+    return n;
 }
+
 
 int main(int ac, char **av)
 {
@@ -189,10 +185,10 @@ int main(int ac, char **av)
         list.push_back(std::atof(word.c_str()));
 
     std::cout << list.size() << " éléments" << std::endl;
-    std::cout << "tri par sélection : " << selection(list)                << " comparaisons" << std::endl;
-    std::cout << "tri par insertion : " << insertion(list)                << " comparaisons" << std::endl;
-    std::cout << "tri à bulles : "      << bubbles(list)                  << " comparaisons" << std::endl;
-    std::cout << "tri fusion : "        << fusion(list)                   << " comparaisons" << std::endl;
-    std::cout << "tri rapide : "        << fast(list, 0, list.size() - 1) << " comparaisons" << std::endl;
+    std::cout << "tri par sélection : " << selection(list) << " comparaisons" << std::endl;
+    std::cout << "tri par insertion : " << insertion(list) << " comparaisons" << std::endl;
+    std::cout << "tri à bulles : "      << bubbles(list)   << " comparaisons" << std::endl;
+    std::cout << "tri fusion : "        << fusion(list)    << " comparaisons" << std::endl;
+    std::cout << "tri rapide : "        << fast(list)      << " comparaisons" << std::endl;
     return 0;
 }
